@@ -1,64 +1,52 @@
-# Carom — starter project
+# Carom
 
-This repository is the starting point for building **Carom**, the game the
-specification under `specs/` describes. Read `specs/overview.md` first; it says
-how the rest of the specification is organized.
+Carom is a top-down paddle duel for the browser. Two paddles face off across a
+dark 16:9 field while one ball ricochets off the walls, the paddles, and two
+fixed center obstacles. Paddle motion at contact adds spin, so rallies bend,
+bank, and change shape after every clean hit.
 
-This build runs on **no engine**. Nothing here supplies a frame loop, input,
-audio, asset loading, or an overlay, and there is no game code to start from.
-What the project supplies is the toolchain, already configured and installed:
-TypeScript, Vite, Vitest, ESLint and Prettier, wired to the commands below.
+The game runs entirely in the browser with no backend and no external runtime
+assets. Graphics are drawn on a canvas, audio cues are synthesized in the
+browser, and the production build is a static site.
 
-## What you own
+## Install
 
-**Everything under `src/`.** The directory does not exist yet; create it.
+```sh
+npm ci
+```
 
-`index.html` loads `/src/main.ts` as its entry point, so that module is where
-your build starts. Beyond that the structure is yours. You write the runtime a
-browser game needs — the frame loop and the delta time it measures, fitting the
-fixed logical field onto the canvas, keyboard input, audio, and the diagnostics
-overlay — and you write the game itself on top of it.
+## Development
 
-You also write the `window.__carom` debugging and automation API that
-`specs/instrumentation.md` specifies. It is a required deliverable: it is how the
-game is driven from code, so it is present and exactly as specified.
+```sh
+npm run dev
+```
 
-Every figure the specification fixes — geometry, speeds, spin, the match rules,
-the action names, the cue names — is stated in `specs/`, and the value stated
-there is authoritative.
+Vite serves the game with hot reload. Open the local URL it prints and play in
+the browser.
 
-Tests you write belong beside your sources as `src/**/*.test.ts`. `npm test` runs
-them in process, in Node, with coverage over `src/`. `@napi-rs/canvas` is
-installed, so a test that needs a real 2D context can draw through one without a
-browser.
+## Production Build
 
-## What you must not edit
+```sh
+npm run build
+```
 
-- **`index.html`** — the page and the canvas.
-- **The toolchain** — `package.json`, `tsconfig.json`, `vite.config.ts`,
-  `vitest.config.ts`, `eslint.config.js`, `.prettierrc.json`, `.prettierignore`,
-  and `.gitignore`.
+The static site is emitted to `dist/`, with `dist/index.html` as its entry
+point. The directory can be served as-is from a static file server.
 
-Add dependencies to `package.json` if you genuinely need them, and commit the
-`package-lock.json` — the build is installed with `npm ci`. Leave the existing
-entries and scripts alone.
+## Controls
 
-## Commands
+- `W` / `S`: move player one's left paddle.
+- `ArrowUp` / `ArrowDown`: move player two's right paddle in Versus.
+- In Solo, either `W` / `S` or the arrow keys move player one.
+- `Enter` or `Space`: confirm menu items.
+- `Escape`: pause, resume, back, or quit from supported menus.
+- `P`: pause or resume during a match.
+- `M`: mute or unmute sound.
+- Backtick: toggle the diagnostics overlay.
 
-- `npm run dev` — serves the game with hot reload.
-- `npm run build` — type-checks, then emits the static site into `dist/`.
-- `npm run preview` — serves `dist/` for a final check.
-- `npm run typecheck` — `tsc --noEmit`.
-- `npm run lint` — ESLint.
-- `npm run format` — Prettier, in check mode.
-- `npm test` — Vitest over `src/**/*.test.ts`, with coverage.
+## Modes
 
-## Before you finish
+Solo pits the left paddle against an AI-controlled right paddle. Versus lets two
+local players share the keyboard. A match goes to 11 points with a two-point
+lead.
 
-- `npm run build` produces `dist/` with `index.html` at its root, and that
-  directory runs as-is on any static host.
-- `npm run typecheck`, `npm run lint`, `npm run format`, and `npm test` all pass.
-  The same four commands are run over the repository you leave behind.
-- **Replace this file** with the `README.md` `specs/overview.md` asks the
-  finished build to ship: what the game is, how to install it, how to run it in
-  development, how to produce the production build, and the controls.
